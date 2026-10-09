@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f4ef" />
+    <meta
+      name="description"
+      content="Calculadora de timer para ar-condicionado: transforme o horário em que você quer ligar e desligar em horas inteiras para programar no controle universal."
+    />
+    <meta name="color-scheme" content="light" />
+    <title>Hora de Ar | Calculadora de timer para ar-condicionado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%233155e7'/%3E%3Cg stroke='%23f5f4ef' stroke-width='2' stroke-linecap='round' fill='none'%3E%3Cpath d='M20 9v22M10.5 14.5l19 11M29.5 14.5l-19 11'/%3E%3C/g%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #172028;
+        background: #f5f4ef;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        --ink: #172028;
+        --muted: #70766f;
+        --paper: #f5f4ef;
+        --blue: #3155e7;
+        --lime: #e6f38c;
+        --line: #d9d9d0;
+        --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a,
+      input {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible {
+        outline: 3px solid #7890ff;
+        outline-offset: 4px;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .app-shell {
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      .page-width {
+        width: min(100% - 64px, 1160px);
+        margin-inline: auto;
+      }
+
+      .topbar {
+        min-height: 84px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--blue);
+        color: #f5f4ef;
+      }
+
+      .brand-mark svg {
+        width: 26px;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.5;
+        animation: mark-turn 24s linear infinite;
+      }
+
+      .brand-name {
+        font-size: 16px;
+        letter-spacing: -0.055em;
+      }
+
+      .brand-name strong {
+        color: var(--blue);
+        font-weight: 800;
+      }
+
+      .topbar-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #555d5b;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 180ms ease;
+      }
+
+      .topbar-link:hover,
+      .back-to-top:hover {
+        color: var(--blue);
+      }
+
+      .topbar-link span {
+        color: var(--blue);
+        font-size: 17px;
+      }
+
+      .hero {
+        min-height: 356px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 305px;
+        align-items: end;
+        column-gap: 64px;
+        padding-top: 60px;
+        padding-bottom: 52px;
+      }
+
+      .hero-copy {
+        max-width: 730px;
+        animation: rise-in 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+
+      .eyebrow,
+      .section-kicker,
+      .clock-label,
+      .field-label,
+      .timer-command {
+        font-family: var(--mono);
+        letter-spacing: 0.09em;
+        font-size: 10px;
+        font-weight: 500;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 20px;
+        color: #66706b;
+      }
+
+      .live-dot {
+        width: 7px;
+        height: 7px;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: #80a337;
+        box-shadow: 0 0 0 0 rgb(128 163 55 / 35%);
+        animation: live-pulse 2.6s ease-out infinite;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(64px, 9vw, 112px);
+        line-height: 0.94;
+        letter-spacing: -0.095em;
+        font-weight: 700;
+      }
+
+      .hero h1 span {
+        color: var(--blue);
+      }
+
+      .hero-description {
+        max-width: 545px;
+        margin: 21px 0 0;
+        color: #5f6662;
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .clock-block {
+        min-height: 126px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        border-left: 1px solid #c9ccc2;
+        padding: 0 0 2px 26px;
+        animation: rise-in 650ms 110ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+
+      .clock-label {
+        color: #737a72;
+        font-size: 9px;
+      }
+
+      .clock-time {
+        display: flex;
+        align-items: baseline;
+        margin: 8px 0 2px -3px;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 56px;
+        line-height: 1.1;
+        letter-spacing: -0.095em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .clock-time small {
+        width: 24px;
+        padding-left: 4px;
+        color: #8d928a;
+        font-size: 17px;
+        letter-spacing: -0.05em;
+      }
+
+      .clock-date {
+        color: #70766f;
+        font-size: 11px;
+        text-transform: capitalize;
+      }
+
+      .planner {
+        border-top: 1px solid var(--line);
+        padding-top: 37px;
+        padding-bottom: 43px;
+      }
+
+      .section-intro {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 36px;
+        margin-bottom: 29px;
+      }
+
+      .section-kicker {
+        display: block;
+        margin-bottom: 10px;
+        color: #81867d;
+      }
+
+      .section-intro h2,
+      .result-heading h2 {
+        margin: 0;
+        font-size: clamp(23px, 3vw, 30px);
+        line-height: 1.2;
+        letter-spacing: -0.055em;
+        font-weight: 600;
+      }
+
+      .section-intro > p {
+        max-width: 275px;
+        margin: 0 2px 3px 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.65;
+      }
+
+      .time-fields {
+        max-width: 810px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 46px minmax(0, 1fr);
+        align-items: center;
+        gap: 27px;
+      }
+
+      .time-field {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+        cursor: pointer;
+      }
+
+      .field-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #69706b;
+        font-size: 9px;
+      }
+
+      .field-index {
+        display: grid;
+        width: 20px;
+        height: 20px;
+        place-items: center;
+        border: 1px solid #d2d4ca;
+        border-radius: 50%;
+        color: var(--blue);
+        font-size: 9px;
+      }
+
+      .time-field input {
+        width: 100%;
+        max-width: 305px;
+        min-height: 75px;
+        margin-top: 1px;
+        border: 0;
+        border-bottom: 1px solid #c7cbc0;
+        border-radius: 0;
+        padding: 0 0 3px;
+        background: transparent;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: clamp(48px, 6vw, 65px);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.1em;
+        cursor: text;
+        transition: border-color 180ms ease;
+      }
+
+      .time-field input:hover,
+      .time-field input:focus {
+        border-bottom-color: var(--blue);
+      }
+
+      .time-field input:focus {
+        outline: none;
+      }
+
+      .time-field input:focus-visible {
+        outline: 3px solid #7890ff;
+        outline-offset: 4px;
+      }
+
+      .field-hint {
+        margin-top: 9px;
+        color: #868b83;
+        font-size: 11px;
+      }
+
+      .cycle-arrow {
+        align-self: center;
+        margin-top: 18px;
+        color: var(--blue);
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .preferences {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 44px;
+        margin-top: 39px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+      }
+
+      .preference-block {
+        display: grid;
+        grid-template-columns: minmax(150px, 1fr) auto;
+        align-items: center;
+        gap: 7px 20px;
+      }
+
+      .preference-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .preference-hint {
+        color: #888d85;
+        font-size: 10px;
+      }
+
+      .state-switch,
+      .rounding-switch {
+        display: flex;
+        align-items: center;
+        border: 1px solid #d5d7ce;
+        border-radius: 999px;
+        padding: 3px;
+      }
+
+      .state-switch button,
+      .rounding-switch button {
+        min-height: 33px;
+        border: 0;
+        border-radius: 999px;
+        padding: 0 13px;
+        background: transparent;
+        color: #666e68;
+        font-size: 11px;
+        cursor: pointer;
+        transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      }
+
+      .state-switch button:hover,
+      .rounding-switch button:hover {
+        color: var(--blue);
+      }
+
+      .state-switch button.is-selected,
+      .rounding-switch button.is-selected {
+        background: var(--ink);
+        color: #fff;
+        box-shadow: 0 2px 7px rgb(23 32 40 / 13%);
+      }
+
+      .rounding-preference {
+        grid-template-columns: 1fr auto;
+      }
+
+      .rounding-switch button {
+        padding-inline: 11px;
+      }
+
+      .rounding-explanation {
+        grid-column: 1 / -1;
+        justify-self: end;
+        color: #858b82;
+        font-size: 10px;
+        text-align: right;
+      }
+
+      .result-band {
+        position: relative;
+        background: #19243a;
+        color: #f3f3eb;
+        isolation: isolate;
+      }
+
+      .result-band::before {
+        position: absolute;
+        z-index: -1;
+        top: -105px;
+        right: -120px;
+        width: 440px;
+        height: 440px;
+        border: 1px solid rgb(191 211 244 / 7%);
+        border-radius: 50%;
+        box-shadow: 0 0 0 34px rgb(191 211 244 / 2%), 0 0 0 70px rgb(191 211 244 / 2%);
+        content: "";
+      }
+
+      .result-inner {
+        padding-top: 37px;
+        padding-bottom: 43px;
+      }
+
+      .result-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 29px;
+      }
+
+      .result-kicker {
+        color: #aeb9cf;
+      }
+
+      .result-heading h2 {
+        color: #f3f3eb;
+        font-size: clamp(27px, 3.5vw, 35px);
+      }
+
+      .result-heading p {
+        margin: 8px 0 0;
+        color: #b9c1ce;
+        font-size: 11px;
+      }
+
+      .copy-area {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+      }
+
+      .copy-button {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 1px solid rgb(240 243 247 / 27%);
+        border-radius: 2px;
+        padding: 0 13px;
+        background: transparent;
+        color: #f3f3eb;
+        font-size: 11px;
+        cursor: pointer;
+        transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+      }
+
+      .copy-button[disabled] {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .copy-button:hover:not([disabled]) {
+        border-color: var(--lime);
+        background: var(--lime);
+        color: #19243a;
+      }
+
+      .copy-button svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .copy-status {
+        min-height: 13px;
+        color: #d9e98a;
+        font-size: 10px;
+      }
+
+      .timer-results {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .timer-result {
+        min-width: 0;
+        padding: 21px 36px 0 0;
+        animation: result-enter 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+
+      .timer-result + .timer-result {
+        border-left: 1px solid rgb(225 232 245 / 19%);
+        padding-right: 0;
+        padding-left: 36px;
+        animation-delay: 100ms;
+      }
+
+      .timer-result-top {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+
+      .step-number {
+        color: #96a2b6;
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      .timer-command {
+        color: #e3ebf5;
+        font-size: 10px;
+      }
+
+      .timer-value {
+        display: flex;
+        align-items: baseline;
+        gap: 11px;
+        margin: 6px 0 0 -5px;
+        color: var(--lime);
+        font-family: var(--mono);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .timer-value strong {
+        font-size: clamp(68px, 8vw, 94px);
+        line-height: 1;
+        letter-spacing: -0.105em;
+      }
+
+      .timer-value span {
+        font-family: "Manrope", system-ui, sans-serif;
+        font-size: 14px;
+        letter-spacing: -0.02em;
+      }
+
+      .timer-instruction {
+        margin: 5px 0 19px;
+        color: #c8d0dc;
+        font-size: 12px;
+      }
+
+      .timer-instruction strong {
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .timer-times {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        border-top: 1px solid rgb(225 232 245 / 17%);
+        padding-top: 14px;
+      }
+
+      .timer-times p {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+        margin: 0;
+      }
+
+      .timer-times p > span {
+        color: #aeb9ca;
+        font-size: 9px;
+      }
+
+      .timer-times p > strong {
+        color: #f1f2eb;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: capitalize;
+      }
+
+      .time-difference {
+        display: inline-block;
+        margin-top: 12px;
+        color: var(--lime);
+        font-size: 10px;
+      }
+
+      .time-difference.is-exact {
+        color: #aeb9ca;
+      }
+
+      .immediate-note {
+        display: block;
+        margin-top: 8px;
+        color: var(--lime);
+        font-size: 10px;
+      }
+
+      .immediate-note[hidden] {
+        display: none;
+      }
+
+      .rounding-warning {
+        margin: 27px 0 0;
+        border-top: 1px solid rgb(230 243 140 / 28%);
+        padding-top: 14px;
+        color: var(--lime);
+        font-size: 11px;
+        line-height: 1.6;
+      }
+
+      .rounding-warning[hidden] {
+        display: none;
+      }
+
+      .invalid-plan {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        border-top: 1px solid rgb(225 232 245 / 19%);
+        padding: 28px 0 6px;
+        color: #edf0f2;
+      }
+
+      .invalid-plan[hidden] {
+        display: none;
+      }
+
+      .invalid-plan p {
+        max-width: 500px;
+        margin: 0;
+        color: #d0d7e2;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .invalid-mark {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid var(--lime);
+        border-radius: 50%;
+        color: var(--lime);
+        font-family: var(--mono);
+      }
+
+      .how-to {
+        display: grid;
+        grid-template-columns: 45px minmax(0, 1fr) 40px;
+        gap: 22px;
+        align-items: start;
+        padding-top: 34px;
+        padding-bottom: 39px;
+      }
+
+      .how-to-number {
+        color: var(--blue);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      .how-to-content h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+
+      .how-to-content p {
+        max-width: 760px;
+        margin: 9px 0 0;
+        color: #6d746d;
+        font-size: 11px;
+        line-height: 1.75;
+      }
+
+      .back-to-top {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        justify-self: end;
+        place-items: center;
+        border: 1px solid var(--line);
+        color: #5f6662;
+        font-size: 17px;
+        text-decoration: none;
+        transition: color 180ms ease, border-color 180ms ease;
+      }
+
+      .back-to-top:hover {
+        border-color: var(--blue);
+      }
+
+      .footer {
+        min-height: 59px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid var(--line);
+        color: #81867e;
+        font-size: 10px;
+      }
+
+      .footer > span:first-child {
+        color: var(--ink);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+
+      .footer-mark {
+        width: 7px;
+        height: 7px;
+        display: inline-block;
+        margin-right: 6px;
+        border-radius: 50%;
+        background: var(--blue);
+      }
+
+      @keyframes rise-in {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes result-enter {
+        from { opacity: 0; transform: translateY(11px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes live-pulse {
+        0% { box-shadow: 0 0 0 0 rgb(128 163 55 / 35%); }
+        70% { box-shadow: 0 0 0 6px rgb(128 163 55 / 0%); }
+        100% { box-shadow: 0 0 0 0 rgb(128 163 55 / 0%); }
+      }
+
+      @keyframes mark-turn {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 760px) {
+        .page-width {
+          width: min(100% - 40px, 620px);
+        }
+
+        .hero {
+          min-height: auto;
+          grid-template-columns: minmax(0, 1fr) 190px;
+          column-gap: 25px;
+          padding-top: 53px;
+          padding-bottom: 42px;
+        }
+
+        .hero h1 {
+          font-size: clamp(58px, 11vw, 82px);
+        }
+
+        .hero-description {
+          max-width: 420px;
+          font-size: 13px;
+        }
+
+        .clock-block {
+          min-height: 108px;
+          padding-left: 17px;
+        }
+
+        .clock-time {
+          font-size: 44px;
+        }
+
+        .clock-time small {
+          width: 19px;
+          font-size: 14px;
+        }
+
+        .section-intro {
+          align-items: start;
+        }
+
+        .section-intro > p {
+          max-width: 210px;
+          font-size: 11px;
+        }
+
+        .time-fields {
+          gap: 19px;
+        }
+
+        .preferences {
+          gap: 27px;
+        }
+
+        .preference-block {
+          grid-template-columns: 1fr;
+          justify-items: start;
+        }
+
+        .rounding-explanation {
+          justify-self: start;
+          text-align: left;
+        }
+
+        .rounding-switch button {
+          padding-inline: 10px;
+        }
+
+        .timer-result {
+          padding-right: 23px;
+        }
+
+        .timer-result + .timer-result {
+          padding-left: 23px;
+        }
+
+        .timer-times {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 540px) {
+        .page-width {
+          width: min(100% - 36px, 420px);
+        }
+
+        .topbar {
+          min-height: 69px;
+        }
+
+        .brand-mark {
+          width: 33px;
+          height: 33px;
+        }
+
+        .brand-mark svg {
+          width: 23px;
+        }
+
+        .topbar-link {
+          gap: 5px;
+          font-size: 10px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 30px;
+          padding-top: 42px;
+          padding-bottom: 34px;
+        }
+
+        .eyebrow {
+          margin-bottom: 15px;
+          font-size: 9px;
+        }
+
+        .hero h1 {
+          font-size: clamp(60px, 17vw, 82px);
+        }
+
+        .hero-description {
+          max-width: 390px;
+          margin-top: 15px;
+          font-size: 12px;
+          line-height: 1.7;
+        }
+
+        .clock-block {
+          min-height: 0;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          align-items: center;
+          column-gap: 13px;
+          border-left: 0;
+          padding: 12px 0 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .clock-label {
+          grid-column: 1 / -1;
+          margin-bottom: 6px;
+        }
+
+        .clock-time {
+          margin: 0 0 0 -2px;
+          font-size: 40px;
+        }
+
+        .clock-date {
+          justify-self: end;
+          max-width: 120px;
+          text-align: right;
+          font-size: 10px;
+        }
+
+        .planner {
+          padding-top: 29px;
+          padding-bottom: 30px;
+        }
+
+        .section-intro {
+          display: block;
+          margin-bottom: 25px;
+        }
+
+        .section-intro h2 {
+          font-size: 25px;
+        }
+
+        .section-intro > p {
+          max-width: 330px;
+          margin-top: 8px;
+        }
+
+        .time-fields {
+          grid-template-columns: 1fr 26px 1fr;
+          gap: 9px;
+        }
+
+        .field-label {
+          gap: 6px;
+          font-size: 8px;
+        }
+
+        .field-index {
+          width: 17px;
+          height: 17px;
+          font-size: 8px;
+        }
+
+        .time-field input {
+          min-height: 64px;
+          font-size: clamp(40px, 13vw, 54px);
+        }
+
+        .field-hint {
+          margin-top: 7px;
+          font-size: 9px;
+        }
+
+        .cycle-arrow {
+          margin-top: 14px;
+          font-size: 17px;
+        }
+
+        .preferences {
+          grid-template-columns: 1fr;
+          gap: 22px;
+          margin-top: 28px;
+          padding-top: 20px;
+        }
+
+        .preference-block,
+        .rounding-preference {
+          grid-template-columns: 1fr auto;
+          align-items: center;
+        }
+
+        .preference-hint {
+          font-size: 9px;
+        }
+
+        .state-switch button,
+        .rounding-switch button {
+          min-height: 31px;
+          padding-inline: 10px;
+          font-size: 10px;
+        }
+
+        .rounding-switch {
+          grid-column: 1 / -1;
+          justify-self: start;
+          margin-top: 6px;
+        }
+
+        .rounding-explanation {
+          grid-column: 1 / -1;
+          justify-self: start;
+          text-align: left;
+        }
+
+        .result-inner {
+          padding-top: 31px;
+          padding-bottom: 31px;
+        }
+
+        .result-heading {
+          align-items: start;
+          margin-bottom: 23px;
+        }
+
+        .result-heading h2 {
+          font-size: 30px;
+        }
+
+        .result-heading p {
+          max-width: 220px;
+          line-height: 1.5;
+        }
+
+        .copy-area {
+          gap: 4px;
+        }
+
+        .copy-button {
+          min-height: 36px;
+          gap: 6px;
+          padding-inline: 9px;
+          font-size: 10px;
+          white-space: nowrap;
+        }
+
+        .copy-button svg {
+          width: 14px;
+          height: 14px;
+        }
+
+        .copy-status {
+          max-width: 125px;
+          font-size: 9px;
+          text-align: right;
+        }
+
+        .timer-results {
+          grid-template-columns: 1fr;
+        }
+
+        .timer-result {
+          padding: 19px 0 24px;
+        }
+
+        .timer-result + .timer-result {
+          border-top: 1px solid rgb(225 232 245 / 19%);
+          border-left: 0;
+          padding: 25px 0 0;
+        }
+
+        .timer-value {
+          margin-top: 8px;
+        }
+
+        .timer-value strong {
+          font-size: 76px;
+        }
+
+        .timer-instruction {
+          margin-bottom: 14px;
+        }
+
+        .timer-times {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+
+        .timer-times p > strong {
+          font-size: 10px;
+        }
+
+        .how-to {
+          grid-template-columns: 28px minmax(0, 1fr) 32px;
+          gap: 12px;
+          padding-top: 27px;
+          padding-bottom: 30px;
+        }
+
+        .how-to-content h2 {
+          font-size: 14px;
+        }
+
+        .how-to-content p {
+          font-size: 10px;
+        }
+
+        .back-to-top {
+          width: 30px;
+          height: 30px;
+        }
+
+        .footer {
+          min-height: 56px;
+          font-size: 9px;
+        }
+      }
+
+      @media (max-width: 365px) {
+        .page-width {
+          width: min(100% - 28px, 420px);
+        }
+
+        .preference-block,
+        .rounding-preference {
+          grid-template-columns: 1fr;
+          gap: 9px;
+        }
+
+        .state-switch {
+          justify-self: start;
+        }
+
+        .rounding-switch {
+          margin-top: 0;
+        }
+
+        .rounding-explanation {
+          grid-column: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar page-width">
+        <a class="brand" href="#inicio" aria-label="Hora de Ar, início">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none">
+              <path d="M20 5v30M7 12.5l26 15M33 12.5l-26 15" />
+              <path d="m15.5 8 4.5 4.5L24.5 8M15.5 32 20 27.5l4.5 4.5M8 17l6.2.2.2-6.2M32 17l-6.2.2-.2-6.2M8 23l6.2-.2.2 6.2M32 23l-6.2-.2-.2 6.2" />
+            </svg>
+          </span>
+          <span class="brand-name">hora de <strong>ar</strong></span>
+        </a>
+        <a class="topbar-link" href="#como-funciona">Como funciona <span aria-hidden="true">↘</span></a>
+      </header>
+
+      <main id="inicio">
+        <section class="hero page-width" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> CALCULADORA DE TIMER</p>
+            <h1 id="hero-title">Hora de <span>ar.</span></h1>
+            <p class="hero-description">
+              Escolha quando o aparelho deve ligar e desligar. A gente transforma os horários em horas inteiras para programar no controle.
+            </p>
+          </div>
+          <div class="clock-block">
+            <span class="clock-label">AGORA NO SEU HORÁRIO LOCAL</span>
+            <div class="clock-time" aria-live="off">
+              <span id="clock-time">--:--</span><small id="clock-seconds">:--</small>
+            </div>
+            <span class="clock-date" id="clock-date">carregando</span>
+          </div>
+        </section>
+
+        <section class="planner page-width" aria-labelledby="planner-title">
+          <div class="section-intro">
+            <div>
+              <span class="section-kicker">01 / SEU PLANO</span>
+              <h2 id="planner-title">Quando o ar deve funcionar?</h2>
+            </div>
+            <p>Os horários são ajustados automaticamente para o próximo ciclo.</p>
+          </div>
+
+          <div class="time-fields">
+            <label class="time-field" for="turn-on-time">
+              <span class="field-label"><span class="field-index" aria-hidden="true">A</span> LIGAR ÀS</span>
+              <input
+                id="turn-on-time"
+                type="time"
+                step="60"
+                value="22:00"
+                autocomplete="off"
+                aria-label="Horário para ligar o ar-condicionado"
+              />
+              <span class="field-hint">Hora desejada para ligar</span>
+            </label>
+
+            <div class="cycle-arrow" aria-hidden="true">→</div>
+
+            <label class="time-field" for="turn-off-time">
+              <span class="field-label"><span class="field-index" aria-hidden="true">B</span> DESLIGAR ÀS</span>
+              <input
+                id="turn-off-time"
+                type="time"
+                step="60"
+                value="06:00"
+                autocomplete="off"
+                aria-label="Horário para desligar o ar-condicionado"
+              />
+              <span class="field-hint">Pode ser no dia seguinte</span>
+            </label>
+          </div>
+
+          <div class="preferences">
+            <div class="preference-block state-preference">
+              <div class="preference-copy">
+                <span class="field-label">O AR ESTÁ AGORA</span>
+                <span class="preference-hint">Define qual timer vem primeiro</span>
+              </div>
+              <div class="state-switch" id="state-switch" role="group" aria-label="Estado atual do ar-condicionado">
+                <button type="button" data-state="off" class="is-selected" aria-pressed="true">Desligado</button>
+                <button type="button" data-state="on" aria-pressed="false">Ligado</button>
+              </div>
+            </div>
+
+            <div class="preference-block rounding-preference">
+              <div class="preference-copy">
+                <span class="field-label">PRECISÃO DO CONTROLE</span>
+                <span class="preference-hint">Seu controle aceita horas inteiras</span>
+              </div>
+              <div class="rounding-switch" id="rounding-switch" role="group" aria-label="Como arredondar os horários">
+                <button type="button" data-rounding="nearest" class="is-selected" aria-pressed="true">Mais perto</button>
+                <button type="button" data-rounding="up" aria-pressed="false">Depois</button>
+                <button type="button" data-rounding="down" aria-pressed="false">Antes</button>
+              </div>
+              <span class="rounding-explanation" id="rounding-note">Arredonda para a hora inteira mais próxima.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="result-band" aria-labelledby="result-title">
+          <div class="result-inner page-width">
+            <div class="result-heading">
+              <div>
+                <span class="section-kicker result-kicker">02 / NO CONTROLE</span>
+                <h2 id="result-title">Anote assim.</h2>
+                <p>As duas contagens começam a partir de agora.</p>
+              </div>
+              <div class="copy-area">
+                <button class="copy-button" type="button" id="copy-button">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="7" y="6" width="9" height="11" rx="1.5" />
+                    <path d="M13 6V4.5A1.5 1.5 0 0 0 11.5 3h-7A1.5 1.5 0 0 0 3 4.5v9A1.5 1.5 0 0 0 4.5 15H7" />
+                  </svg>
+                  Copiar plano
+                </button>
+                <span class="copy-status" id="copy-status" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="timer-results" id="timer-results">
+              <article class="timer-result" data-card="0">
+                <div class="timer-result-top">
+                  <span class="step-number">01</span>
+                  <span class="timer-command" data-slot="command">TIMER ON</span>
+                </div>
+                <div class="timer-value">
+                  <strong data-slot="hours">--</strong>
+                  <span data-slot="unit">horas</span>
+                </div>
+                <p class="timer-instruction">
+                  Programe o <strong data-slot="command-strong">TIMER ON</strong> para
+                  <strong data-slot="hours-strong">--</strong>.
+                </p>
+                <div class="timer-times">
+                  <p><span>Você pediu</span><strong data-slot="target">--</strong></p>
+                  <p><span>Previsão do timer</span><strong data-slot="estimated">--</strong></p>
+                </div>
+                <span class="time-difference" data-slot="offset">--</span>
+                <span class="immediate-note" data-slot="immediate" hidden>
+                  Para agir agora, faça manualmente no aparelho.
+                </span>
+              </article>
+
+              <article class="timer-result" data-card="1">
+                <div class="timer-result-top">
+                  <span class="step-number">02</span>
+                  <span class="timer-command" data-slot="command">TIMER OFF</span>
+                </div>
+                <div class="timer-value">
+                  <strong data-slot="hours">--</strong>
+                  <span data-slot="unit">horas</span>
+                </div>
+                <p class="timer-instruction">
+                  Programe o <strong data-slot="command-strong">TIMER OFF</strong> para
+                  <strong data-slot="hours-strong">--</strong>.
+                </p>
+                <div class="timer-times">
+                  <p><span>Você pediu</span><strong data-slot="target">--</strong></p>
+                  <p><span>Previsão do timer</span><strong data-slot="estimated">--</strong></p>
+                </div>
+                <span class="time-difference" data-slot="offset">--</span>
+                <span class="immediate-note" data-slot="immediate" hidden>
+                  Para agir agora, faça manualmente no aparelho.
+                </span>
+              </article>
+            </div>
+
+            <div class="invalid-plan" id="invalid-plan" role="alert" hidden>
+              <span class="invalid-mark" aria-hidden="true">!</span>
+              <p>
+                Preencha os dois horários e escolha horários diferentes para ligar e desligar. Um mesmo horário não define a
+                duração do ciclo.
+              </p>
+            </div>
+
+            <p class="rounding-warning" id="rounding-warning" role="status" hidden>
+              Atenção: com o arredondamento escolhido, os dois timers caem na mesma hora. Tente outro ajuste ou horários mais
+              distantes.
+            </p>
+          </div>
+        </section>
+
+        <section class="how-to page-width" id="como-funciona">
+          <div class="how-to-number">03</div>
+          <div class="how-to-content">
+            <h2>Uma conta simples, com uma ressalva.</h2>
+            <p>
+              O cálculo considera que cada timer conta a partir do momento em que você o programa. Alguns controles iniciam o TIMER
+              OFF somente quando o aparelho já está ligado; se for o caso do seu, confira o manual do controle.
+            </p>
+            <p>
+              Esta página é um arquivo único: salve-a no celular ou computador (Ctrl+S) e abra em qualquer navegador, até sem
+              internet. Suas escolhas ficam guardadas no aparelho.
+            </p>
+          </div>
+          <a class="back-to-top" href="#inicio" aria-label="Voltar ao início">↑</a>
+        </section>
+      </main>
+
+      <footer class="footer page-width">
+        <span><span class="footer-mark" aria-hidden="true"></span> hora de ar</span>
+        <span>Um jeito mais fácil de acertar o timer.</span>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var STORAGE_KEY = "hora-de-ar:v1";
+
+        var roundingOptions = {
+          nearest: "Arredonda para a hora inteira mais próxima.",
+          up: "Arredonda para cima: o timer não deve agir antes do horário escolhido.",
+          down: "Arredonda para baixo: o timer pode agir antes do horário escolhido."
+        };
+
+        var state = {
+          onTime: "22:00",
+          offTime: "06:00",
+          appliance: "off",
+          rounding: "nearest",
+          copyTimer: null
+        };
+
+        var elements = {
+          clockTime: document.getElementById("clock-time"),
+          clockSeconds: document.getElementById("clock-seconds"),
+          clockDate: document.getElementById("clock-date"),
+          onTime: document.getElementById("turn-on-time"),
+          offTime: document.getElementById("turn-off-time"),
+          stateSwitch: document.getElementById("state-switch"),
+          roundingSwitch: document.getElementById("rounding-switch"),
+          roundingNote: document.getElementById("rounding-note"),
+          results: document.getElementById("timer-results"),
+          invalid: document.getElementById("invalid-plan"),
+          warning: document.getElementById("rounding-warning"),
+          copyButton: document.getElementById("copy-button"),
+          copyStatus: document.getElementById("copy-status")
+        };
+
+        var cards = Array.prototype.slice.call(document.querySelectorAll(".timer-result")).map(function (card) {
+          var slots = {};
+          Array.prototype.forEach.call(card.querySelectorAll("[data-slot]"), function (node) {
+            slots[node.getAttribute("data-slot")] = node;
+          });
+          return slots;
+        });
+
+        function pad(value) {
+          return value < 10 ? "0" + value : String(value);
+        }
+
+        function isValidTime(value) {
+          return typeof value === "string" && /^\d{2}:\d{2}$/.test(value);
+        }
+
+        function parseTime(value) {
+          var parts = value.split(":");
+          return { hours: Number(parts[0]), minutes: Number(parts[1]) };
+        }
+
+        function startOfMinute(date) {
+          var result = new Date(date.getTime());
+          result.setSeconds(0, 0);
+          return result;
+        }
+
+        function atTime(date, value) {
+          var time = parseTime(value);
+          return new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.hours, time.minutes, 0, 0);
+        }
+
+        function nextOccurrence(value, reference, strictlyAfter) {
+          var base = startOfMinute(reference);
+          var candidate = atTime(base, value);
+          var needsNextDay = strictlyAfter ? candidate.getTime() <= base.getTime() : candidate.getTime() < base.getTime();
+
+          if (needsNextDay) {
+            candidate.setDate(candidate.getDate() + 1);
+          }
+          return candidate;
+        }
+
+        function wholeHours(minutes, rounding) {
+          var exactHours = Math.max(0, minutes / 60);
+
+          if (rounding === "up") return Math.ceil(exactHours);
+          if (rounding === "down") return Math.floor(exactHours);
+          return Math.round(exactHours);
+        }
+
+        function formatClock(date) {
+          return pad(date.getHours()) + ":" + pad(date.getMinutes());
+        }
+
+        function formatSeconds(date) {
+          return pad(date.getSeconds());
+        }
+
+        function dayDifference(first, second) {
+          var firstDay = Date.UTC(first.getFullYear(), first.getMonth(), first.getDate());
+          var secondDay = Date.UTC(second.getFullYear(), second.getMonth(), second.getDate());
+          return Math.round((firstDay - secondDay) / 86400000);
+        }
+
+        function formatWhen(date, now) {
+          var daysAway = dayDifference(date, now);
+          var dayLabel;
+
+          if (daysAway === 0) {
+            dayLabel = "hoje";
+          } else if (daysAway === 1) {
+            dayLabel = "amanhã";
+          } else {
+            dayLabel = new Intl.DateTimeFormat("pt-BR", {
+              weekday: "long",
+              day: "numeric",
+              month: "long"
+            }).format(date);
+          }
+
+          return dayLabel + ", às " + formatClock(date);
+        }
+
+        function offsetDescription(minutes) {
+          if (minutes === 0) return "No horário escolhido";
+          var amount = Math.abs(minutes);
+          return amount + " min " + (minutes > 0 ? "depois" : "antes") + " do horário";
+        }
+
+        function timerLabel(kind) {
+          return kind === "on" ? "TIMER ON" : "TIMER OFF";
+        }
+
+        function buildPlan(now) {
+          var onTime = state.onTime;
+          var offTime = state.offTime;
+
+          if (!isValidTime(onTime) || !isValidTime(offTime) || onTime === offTime) return null;
+
+          var reference = startOfMinute(now);
+          var firstKind = state.appliance === "off" ? "on" : "off";
+          var secondKind = firstKind === "on" ? "off" : "on";
+
+          function timeFor(kind) {
+            return kind === "on" ? onTime : offTime;
+          }
+
+          var firstTarget = nextOccurrence(timeFor(firstKind), reference, false);
+          var secondTarget = nextOccurrence(timeFor(secondKind), firstTarget, true);
+
+          return [firstKind, secondKind].map(function (kind, index) {
+            var target = index === 0 ? firstTarget : secondTarget;
+            var minutesAway = Math.max(0, Math.round((target.getTime() - now.getTime()) / 60000));
+            var hours = wholeHours(minutesAway, state.rounding);
+            var estimated = new Date(now.getTime() + hours * 3600000);
+
+            return {
+              kind: kind,
+              target: target,
+              hours: hours,
+              estimated: estimated,
+              offsetMinutes: Math.round((estimated.getTime() - target.getTime()) / 60000)
+            };
+          });
+        }
+
+        function renderClock(now) {
+          elements.clockTime.textContent = formatClock(now);
+          elements.clockSeconds.textContent = ":" + formatSeconds(now);
+          elements.clockDate.textContent = new Intl.DateTimeFormat("pt-BR", {
+            weekday: "long",
+            day: "numeric",
+            month: "long"
+          }).format(now);
+        }
+
+        function renderPlan(now) {
+          var plan = buildPlan(now);
+
+          if (!plan) {
+            elements.results.hidden = true;
+            elements.invalid.hidden = false;
+            elements.warning.hidden = true;
+            elements.copyButton.disabled = true;
+            return null;
+          }
+
+          elements.results.hidden = false;
+          elements.invalid.hidden = true;
+          elements.copyButton.disabled = false;
+
+          plan.forEach(function (step, index) {
+            var slots = cards[index];
+            var label = timerLabel(step.kind);
+            var unit = step.hours === 1 ? "hora" : "horas";
+
+            slots.command.textContent = label;
+            slots["command-strong"].textContent = label;
+            slots.hours.textContent = String(step.hours);
+            slots.unit.textContent = unit;
+            slots["hours-strong"].textContent = step.hours + " " + unit;
+            slots.target.textContent = formatWhen(step.target, now);
+            slots.estimated.textContent = formatWhen(step.estimated, now);
+            slots.offset.textContent = offsetDescription(step.offsetMinutes);
+            slots.offset.classList.toggle("is-exact", step.offsetMinutes === 0);
+            slots.immediate.hidden = step.hours !== 0;
+          });
+
+          var collides = plan[0].estimated.getTime() === plan[1].estimated.getTime();
+          elements.warning.hidden = !collides;
+
+          return plan;
+        }
+
+        function buildPlanText(plan, now) {
+          return plan
+            .map(function (step, index) {
+              var unit = step.hours === 1 ? "hora" : "horas";
+              return (
+                index + 1 + ". " + timerLabel(step.kind) + ": " + step.hours + " " + unit +
+                " (aprox. " + formatWhen(step.estimated, now) + "; alvo " + formatWhen(step.target, now) + ")."
+              );
+            })
+            .join("\n");
+        }
+
+        function persist() {
+          try {
+            window.localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify({
+                onTime: state.onTime,
+                offTime: state.offTime,
+                appliance: state.appliance,
+                rounding: state.rounding
+              })
+            );
+          } catch (error) {
+            /* armazenamento indisponível: segue sem persistir */
+          }
+        }
+
+        function restore() {
+          try {
+            var raw = window.localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            var saved = JSON.parse(raw);
+
+            if (isValidTime(saved.onTime)) {
+              state.onTime = saved.onTime;
+              elements.onTime.value = saved.onTime;
+            }
+            if (isValidTime(saved.offTime)) {
+              state.offTime = saved.offTime;
+              elements.offTime.value = saved.offTime;
+            }
+            if (saved.appliance === "on" || saved.appliance === "off") {
+              state.appliance = saved.appliance;
+            }
+            if (roundingOptions[saved.rounding]) {
+              state.rounding = saved.rounding;
+            }
+          } catch (error) {
+            /* dados corrompidos: usa os valores padrão */
+          }
+        }
+
+        function syncToggles() {
+          Array.prototype.forEach.call(elements.stateSwitch.querySelectorAll("button"), function (button) {
+            var selected = button.getAttribute("data-state") === state.appliance;
+            button.classList.toggle("is-selected", selected);
+            button.setAttribute("aria-pressed", selected ? "true" : "false");
+          });
+
+          Array.prototype.forEach.call(elements.roundingSwitch.querySelectorAll("button"), function (button) {
+            var selected = button.getAttribute("data-rounding") === state.rounding;
+            button.classList.toggle("is-selected", selected);
+            button.setAttribute("aria-pressed", selected ? "true" : "false");
+          });
+
+          elements.roundingNote.textContent = roundingOptions[state.rounding];
+        }
+
+        var lastPlan = null;
+
+        function refresh(now) {
+          renderClock(now);
+          lastPlan = renderPlan(now);
+        }
+
+        function fallbackCopy(text) {
+          var area = document.createElement("textarea");
+          area.value = text;
+          area.setAttribute("readonly", "readonly");
+          area.style.position = "fixed";
+          area.style.top = "-1000px";
+          document.body.appendChild(area);
+          area.select();
+
+          var worked = false;
+          try {
+            worked = document.execCommand("copy");
+          } catch (error) {
+            worked = false;
+          }
+          document.body.removeChild(area);
+          return worked;
+        }
+
+        function showCopyStatus(message) {
+          elements.copyStatus.textContent = message;
+          if (state.copyTimer) window.clearTimeout(state.copyTimer);
+          state.copyTimer = window.setTimeout(function () {
+            elements.copyStatus.textContent = "";
+          }, 2200);
+        }
+
+        elements.onTime.addEventListener("change", function (event) {
+          state.onTime = event.target.value;
+          persist();
+          refresh(new Date());
+        });
+
+        elements.offTime.addEventListener("change", function (event) {
+          state.offTime = event.target.value;
+          persist();
+          refresh(new Date());
+        });
+
+        elements.stateSwitch.addEventListener("click", function (event) {
+          var button = event.target.closest("button[data-state]");
+          if (!button) return;
+          state.appliance = button.getAttribute("data-state");
+          syncToggles();
+          persist();
+          refresh(new Date());
+        });
+
+        elements.roundingSwitch.addEventListener("click", function (event) {
+          var button = event.target.closest("button[data-rounding]");
+          if (!button) return;
+          state.rounding = button.getAttribute("data-rounding");
+          syncToggles();
+          persist();
+          refresh(new Date());
+        });
+
+        elements.copyButton.addEventListener("click", function () {
+          if (!lastPlan) return;
+
+          var text = buildPlanText(lastPlan, new Date());
+
+          function finish(worked) {
+            showCopyStatus(worked ? "Plano copiado" : "Não foi possível copiar neste navegador");
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(
+              function () {
+                finish(true);
+              },
+              function () {
+                finish(fallbackCopy(text));
+              }
+            );
+            return;
+          }
+
+          finish(fallbackCopy(text));
+        });
+
+        restore();
+        syncToggles();
+        refresh(new Date());
+        window.setInterval(function () {
+          refresh(new Date());
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>
